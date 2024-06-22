@@ -24,19 +24,23 @@ public class EmployeeController {
     }
 
     @GetMapping("/add")
-    public void add(@RequestParam String firstName, @RequestParam String lastName) {
-       employeeService.add(firstName, lastName);
+    public Employee add(@RequestParam String firstName, @RequestParam String lastName) {
+       return employeeService.add(firstName, lastName);
 
     }
+
     @GetMapping("/remove")
     public void remove(@RequestParam String firstName, @RequestParam String lastName) {
-        employeeService.remove(firstName,lastName);
+        employeeService.remove(firstName, lastName);
     }
+
     @GetMapping("/find")
     public Employee find(@RequestParam String firstName, @RequestParam String lastName) {
-        return employeeService.find(firstName,lastName);
+        return employeeService.find(firstName, lastName);
 
-    }@GetMapping("/all")
+    }
+
+    @GetMapping("/all")
     public Collection<Employee> getAll() {
         return employeeService.getAll();
 
