@@ -2,60 +2,74 @@ package ru.skypro.employee_demo1;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 
 public class EmployeeService {
-    List<Employee> employeeList = List.of(
-            new Employee("Иван", "Иванов"),
-            new Employee("Петр", "Петров"),
-            new Employee("Павел", "Дуров")
-    );
+    int maxEmployee = 14;
+    private final Map<String, Employee> employeeMap = new HashMap<>(maxEmployee);
+//            new Employee("Иван", "Иванов"),
+//           "234", new Employee("Петр", "Петров"),
+//            "456", new Employee("Павел", "Дуров"),
+//           "567", new Employee("Валерий", "Дуров"),
+//            "678",new Employee("Сергей", "Зверев")
+////            new Employee("Василий", "Васильев"),
+////            new Employee("Иннокентий", "Старцев"),
+////            new Employee("Люси", "Маклин"),
+////            new Employee("Куп", "Говард"),
+////            new Employee("Павел", "Дуров"),
+////            new Employee("Максимус", "Рыцарь"),
+////            new Employee("Ли", "Молдэйвер"),
+////            new Employee("Барб", "Говард"),
+////            new Employee("Стеф", "Харпер"),
+////            new Employee("Бетти", "Пирсон")
+//    );
 
-    int maxEmployee = 15;
 
-    public void addEmployee(String firstName, String lastName) {
+    public Employee add(String firstName, String lastName, int department, double salary) {
 
-        if (employeeList.size() >= maxEmployee) {
-            // System.out.println("Нельзя добавить сотрудника, штат заполнен");
+        Employee emp = new Employee(firstName, lastName, department, salary);
+        var key = makeKey(firstName, lastName);
+        if (employeeMap.size() >= maxEmployee) {
             throw new EmployeeStorageIsFullException();
         }
-        Employee emp = new Employee(firstName, lastName);
-        if (findEmployee(firstName, lastName)) {
+        if (employeeMap.containsKey(key)) {
             throw new EmployeeAlreadyAddedException();
         }
-
-        employeeList.add(employeeList.size() + 1, new Employee(firstName, lastName));
-
+        employeeMap.put(key, emp);
+        return emp;
     }
 
-    public void removeEmployee(String firstName, String lastName) {
-        Employee emp = new Employee(firstName,lastName);
-        for (int i = 0; i < employeeList.size(); i++) {
-
-            if (employeeList.get(i).equals(emp)) {
-                employeeList.remove(employeeList.get(i));
-            }
-            if (!findEmployee(firstName,lastName)) {
-                throw new EmployeeNotFoundException();
-            }
+    public void remove(String firstName, String lastName) {
+        var key = makeKey(firstName, lastName);
+        if (employeeMap.containsKey(key)) {
+            employeeMap.remove(key);
+            return;
         }
+        throw new EmployeeNotFoundException();
     }
 
-    public boolean findEmployee(String firstName, String lastName) {
-        Employee emp = new Employee(firstName, lastName);
-        for (int i = 0; i < employeeList.size(); i++) {
-            if (employeeList.get(i).equals(emp)) {
-                System.out.println("Сотрудник с именем " + firstName + " и фамилией " + lastName + " найден: " + employeeList.get(i));
-                return true;
-            }
-            //System.out.println(emp.getFirstName() + " " + emp.getLastName() + " не найден!");
-
-            throw new EmployeeNotFoundException();
-
+    public Employee find(String firstName, String lastName) {
+        var key = makeKey(firstName, lastName);
+        Employee emp = employeeMap.get(key);
+        if (emp != null) {
+            return employeeMap.get(key);
         }
-
-        return false;
+        throw new EmployeeNotFoundException();
     }
+
+    public Collection<Employee> getAll() {
+
+        return employeeMap.values();
+    }
+
+    public String print(Employee employee) {
+        return employee.toString();
+    }
+
+    private static String makeKey(String firstName, String lastName) {
+        return (firstName + "_" + lastName).toLowerCase();
+    }
+
 }
