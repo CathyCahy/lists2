@@ -27,8 +27,9 @@ public class EmployeeService {
 //    );
 
 
-    public Employee add(String firstName, String lastName) {
-        Employee emp = new Employee(firstName, lastName);
+    public Employee add(String firstName, String lastName, int department, double salary) {
+
+        Employee emp = new Employee(firstName, lastName, department, salary);
         var key = makeKey(firstName, lastName);
         if (employeeMap.size() >= maxEmployee) {
             throw new EmployeeStorageIsFullException();
@@ -58,7 +59,8 @@ public class EmployeeService {
         throw new EmployeeNotFoundException();
     }
 
-    public Collection getAll() {
+    public Collection<Employee> getAll() {
+
         return employeeMap.values();
     }
 
@@ -69,4 +71,5 @@ public class EmployeeService {
     private static String makeKey(String firstName, String lastName) {
         return (firstName + "_" + lastName).toLowerCase();
     }
+
 }
